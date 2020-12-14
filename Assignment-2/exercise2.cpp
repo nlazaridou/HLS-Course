@@ -7,7 +7,7 @@
 #include <cstdlib>
 
 static const int TESTS = 10;
-static const int W = 10;
+static const int W = 8; //since we test in a range (-100 to 100) 
 
 typedef ac_int <W, true> inputType;
 typedef ac_int <W+W, true> outputType;
@@ -68,14 +68,15 @@ void csd_encode(ac_int<W, true>& num, ac_int<W, false>& x_p, ac_int<W, false>
 outputType csd_mult(inputType& in, ac_int<W, false>& x_p, ac_int<W, false>& x_m) {
     // in is the input value (non constant)
     // x_p and x_m is the CSD representation of a constant
+    outputType in_copy = in;
     outputType res = 0;
     int i = 0;
     while (i < W) {
         if (x_p[i]) {
-            res = res + (in << i);
+            res = res + (in_copy <<i);
         }
         else if (x_m[i]) {
-            res = res - (in << i);
+            res = res - (in_copy <<i);
         }
         i++;
     }
@@ -96,21 +97,22 @@ int main()
 
     std::srand(std::time(NULL));
 
-    //filling the input channels with test values in range: (-20) - 20
+    //filling the input channels with test values in range: (-100) - 100
     for (int i = 0; i < TESTS; ++i)
     {     
-        num_stream.write((std::rand() % 41) - 20);
-        in_stream.write((std::rand() % 41) - 20);
+        num_stream.write((std::rand() % 201) - 100);
+        in_stream.write((std::rand() % 201) - 100);
     }
 
+    std::cout << "Random Multiplications. The two results are a comparison of our implementation vs a normal Cpp multiplication\n";
     while (num_stream.available(1)) {
         num = num_stream.read();
         in = in_stream.read();
         csd_encode<W>(num, xp, xm);
         mul = csd_mult(in, xp, xm);
-        std::cout << num << " * " << in << " = " << mul << std::endl;
+        std::cout << num << " * " << in << " = " << mul << "  vs  " << num*in << std::endl;
+        //std::cout << xp-xm << std::endl;
     }
 
     return 0;
 }
-
