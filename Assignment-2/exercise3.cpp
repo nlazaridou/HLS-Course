@@ -24,7 +24,7 @@ class RunLengthEncoder{
 			if (in.available(10)) {
 				num=in.read();
 				count=1;
-				for(int i=0; i<9; ++i) {
+				while(in.available(1)) {
 					nextNum=in.read();
 					if(num==nextNum) {
 						count++;
@@ -47,13 +47,13 @@ int main(){
 	std::srand(std::time(NULL));
 
 	for (int i=0; i<TESTS;i++) {
-
+		int streamLength=std::rand()%12;
 		ac_channel<dtype> in_test;
 		ac_channel<dtype> out_test;
 
 		std::cout<<"\n\nTest "<< i+1 << " In Vector: ";
 
-		for (int j=0; j<10; ++j) {
+		for (int j=0; j<streamLength; ++j) {
 			int in = std::rand()%16;
 			in_test.write(in);
 			std::cout<<in<<" ";
