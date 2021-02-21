@@ -1,8 +1,7 @@
-
+//mean filter 1x5 
 
 #include <iostream>
 #include <ac_int.h>
-#include <ac_channel.h>
 
 static const int N=280; //N=row
 static const int M=360; //M=column
